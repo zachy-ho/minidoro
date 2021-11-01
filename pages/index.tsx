@@ -11,8 +11,7 @@ const Main: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Menu />
-      <Timer controls={}/>
+      <HomeLayout />
     </div>
   );
 };
