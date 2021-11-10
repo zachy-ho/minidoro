@@ -2,34 +2,33 @@ import { makeAutoObservable } from 'mobx';
 
 type TimerState = 'stopped' | 'running' | 'paused';
 
-export class TimerStore {
-  /* Duration in seconds */
-  private _duration: number;
+type TimerProps = {
+  duration: number,
+  state?: TimerState;
+}
 
-  private _state: TimerState = 'stopped';
+export class Timer {
 
-  constructor(duration: number) {
-    this._duration = duration;
-    makeAutoObservable(this)
+  duration: number;
+  state: TimerState;
+
+  constructor({ duration, state }: TimerProps) {
+    this.duration = duration;
+    this.state = state ?? 'stopped';
+    makeAutoObservable(this);
   }
 
   get seconds() {
-    return this._duration % 60;
+    return this.duration % 60;
   }
+}
 
-  get duration() {
-    return this._duration;
-  }
+export class TimerStore {
+  /* Duration in seconds */
+  timer: Timer;
 
-  set duration(newDuration: number) {
-    this._duration = newDuration;
-  }
-
-  get state() {
-    return this._state;
-  }
-
-  set state(newState: TimerState) {
-    this._state = newState;
+  constructor(timer: Timer) {
+    this.timer = timer;
+    makeAutoObservable(this)
   }
 }

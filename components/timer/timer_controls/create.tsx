@@ -1,15 +1,16 @@
-import { TimerControls } from './timer_controls';
-import { TimerPresenter } from 'components/timer/timer_presenter';
-import { TimerStore } from 'components/timer/timer_store';
+import { TimerControlsView } from './timer_controls_view';
+import type { TimerPresenter } from 'components/timer/timer_presenter';
 
-export function createTimerControls(): () => JSX.Element {
-  const timerPresenter = new TimerPresenter();
-
+export function createTimerControls({ 
+  timerPresenter 
+}: {
+  timerPresenter: TimerPresenter
+}): () => JSX.Element {
   return () => (
-    <TimerControls 
-      onSetButtonClick={}
-      onPlayPauseButtonClick={}
-      onStopButtonClick={}
-      />
-  )
+    <TimerControlsView
+      onSetButtonClick={timerPresenter.setDuration}
+      onPlayPauseButtonClick={timerPresenter.toggleTimer}
+      onStopButtonClick={timerPresenter.stopTimer}
+    />
+  );
 }
