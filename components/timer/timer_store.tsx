@@ -3,32 +3,42 @@ import { makeAutoObservable } from 'mobx';
 type TimerState = 'stopped' | 'running' | 'paused';
 
 type TimerProps = {
-  duration: number,
+  startingDuration: number;
+  remainingDuration: number;
+  state: TimerState;
+  interval: NodeJS.Timer | undefined;
+}
+
+type TimerConstructorProps = {
+  durationInSeconds: number,
   state?: TimerState;
 }
 
-export class Timer {
+export class Timer implements TimerProps {
 
-  duration: number;
+  // In milliseconds
+  startingDuration: number;
+
+  // In milliseconds
+  remainingDuration: number;
+
   state: TimerState;
 
-  constructor({ duration, state }: TimerProps) {
-    this.duration = duration;
+  interval: NodeJS.Timer | undefined;
+
+  constructor({ durationInSeconds, state }: TimerConstructorProps) {
+    this.startingDuration = durationInSeconds * 1000;
+    this.remainingDuration = durationInSeconds * 1000;
     this.state = state ?? 'stopped';
+    this.interval = undefined;
     makeAutoObservable(this);
   }
 
-  get seconds() {
-    return this.duration % 60;
+  get remainingSeconds() {
+    return (this.remainingDuration/1000) % 60;
   }
-}
 
-export class TimerStore {
-  /* Duration in seconds */
-  timer: Timer;
-
-  constructor(timer: Timer) {
-    this.timer = timer;
-    makeAutoObservable(this)
+  get startingSeconds() {
+    return (this.startingDuration/1000) % 60;
   }
 }
