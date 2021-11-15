@@ -3,42 +3,42 @@ import { makeAutoObservable } from 'mobx';
 type TimerState = 'stopped' | 'running' | 'paused';
 
 type TimerProps = {
-  startingDuration: number;
-  remainingDuration: number;
+  startingMilliseconds: number;
+  remainingMilliseconds: number;
   state: TimerState;
   interval: NodeJS.Timer | undefined;
 }
 
 type TimerConstructorProps = {
-  durationInSeconds: number,
+  startingMilliseconds: number,
   state?: TimerState;
 }
 
 export class Timer implements TimerProps {
 
   // In milliseconds
-  startingDuration: number;
+  startingMilliseconds: number;
 
   // In milliseconds
-  remainingDuration: number;
+  remainingMilliseconds: number;
 
   state: TimerState;
 
   interval: NodeJS.Timer | undefined;
 
-  constructor({ durationInSeconds, state }: TimerConstructorProps) {
-    this.startingDuration = durationInSeconds * 1000;
-    this.remainingDuration = durationInSeconds * 1000;
+  constructor({ startingMilliseconds, state }: TimerConstructorProps) {
+    this.startingMilliseconds = startingMilliseconds;
+    this.remainingMilliseconds = startingMilliseconds;
     this.state = state ?? 'stopped';
     this.interval = undefined;
     makeAutoObservable(this);
   }
 
   get remainingSeconds() {
-    return (this.remainingDuration/1000) % 60;
+    return (this.remainingMilliseconds/1000) % 60;
   }
 
   get startingSeconds() {
-    return (this.startingDuration/1000) % 60;
+    return (this.startingMilliseconds/1000) % 60;
   }
 }

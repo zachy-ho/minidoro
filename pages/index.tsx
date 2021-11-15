@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { Page } from 'components/page/page';
+import { PomodoroHomePage } from 'components/pomodoro_home_page/pomodoro_home_page';
 import styles from './main.module.css';
 
 const Index: NextPage = () => {
@@ -12,7 +12,7 @@ const Index: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Page />
+      <PomodoroHomePage />
     </div>
   );
 };
