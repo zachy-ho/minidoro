@@ -1,8 +1,8 @@
 import React from 'react';
-import { createTimer } from 'components/timer/create';
+import { createTimer } from 'components/timer/timer';
 import { Timer } from 'components/timer/timer_store';
 import { TimerPresenter } from 'components/timer/timer_presenter';
-import { createTimerControls } from 'components/timer/timer_controls/create';
+import { createTimerControls } from 'components/timer/timer_controls/timer_controls';
 import styles from './pomodoro_home_page.module.css';
 
 export const PomodoroHomePage = () => {

@@ -1,6 +1,14 @@
 module.exports = {
   root: true,
-  extends: ['next/core-web-vitals', 'prettier'],
+  extends: [
+    'next/core-web-vitals',
+    'prettier',
+    'eslint:recommended',
+    'plugin:import/recommended',
+    'plugin:import/typescript'
+  ],
+  plugins: ['import'],
+  parser: "@typescript-eslint/parser",
   rules: {
     'getter-return': 'error',
     'no-const-assign': 'error',
@@ -9,6 +17,7 @@ module.exports = {
     'no-dupe-else-if': 'error',
     'no-duplicate-imports': 'warn',
     'no-setter-return': 'error',
+    'no-undef': 'off',
     'no-unreachable': 'warn',
     'no-unused-vars': [
       'warn',
@@ -18,5 +27,27 @@ module.exports = {
       },
     ],
     'no-trailing-spaces': 'warn',
+    'import/first': 'error',
+    'import/no-unresolved': 'error',
+    'import/order': 'error',
+    'react/display-name': 'off'
   },
+  settings: {
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.ts', '.tsx'],
+    },
+    'import/resolver': {
+      'node': {
+        'extensions': [
+          '.ts',
+          '.tsx',
+          '.js',
+          '.jsx'
+        ]
+      },
+      'typescript': {
+        'alwaysTryTypes': true
+      },
+    },
+  }
 };

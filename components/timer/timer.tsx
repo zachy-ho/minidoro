@@ -11,3 +11,18 @@ export const TimerView = observer(({ timer }: TimerViewProps) => (
       <span className={styles.seconds}>{timer.remainingSeconds}</span>
     </div>
 ))
+
+
+export const createTimer = ({ 
+  timer,
+} : {
+  timer: Timer,
+}): () => JSX.Element => {
+
+  return observer(() => (
+      <>
+        <TimerView timer={timer} />
+      </>
+    )
+  );
+}

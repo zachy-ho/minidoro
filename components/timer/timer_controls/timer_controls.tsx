@@ -2,7 +2,38 @@ import React, { ChangeEvent } from 'react';
 import { observer } from 'mobx-react';
 import { makeObservable, observable } from 'mobx';
 import styles from './timer_controls.module.css';
-import { Timer } from '../timer_store';
+import type { TimerPresenter } from 'components/timer/timer_presenter';
+import type { Timer } from 'components/timer/timer_store';
+
+export const createTimerControls = ({
+  timer,
+  timerPresenter
+}: {
+  timer: Timer,
+  timerPresenter: TimerPresenter
+}): () => JSX.Element => {
+
+  const handleSetButtonClick = (durationSeconds: number): void => {
+    timerPresenter.setStartingDurationSeconds({ timer, durationSeconds });
+  }
+
+  const handlePlayPauseButtonClick = (): void => {
+    timerPresenter.toggleTimer(timer);
+  }
+
+  const handleStopButtonClick = (): void => {
+    timerPresenter.stopTimer(timer);
+  }
+
+  return () => (
+    <TimerControlsView
+      timer={timer}
+      onSetButtonClick={handleSetButtonClick}
+      onPlayPauseButtonClick={handlePlayPauseButtonClick}
+      onStopButtonClick={handleStopButtonClick}
+    />
+  );
+}
 
 type TimerControlsProps = {
   timer: Timer;
