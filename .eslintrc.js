@@ -7,7 +7,10 @@ module.exports = {
     'plugin:import/recommended',
     'plugin:import/typescript'
   ],
-  plugins: ['import'],
+  plugins: [
+    '@typescript-eslint',
+    'import'
+  ],
   parser: "@typescript-eslint/parser",
   rules: {
     'getter-return': 'error',
@@ -20,12 +23,16 @@ module.exports = {
     'no-undef': 'off',
     'no-unreachable': 'warn',
     'no-unused-vars': [
-      'warn',
+      'off',
       {
         argsIgnorePattern: '^_',
         varsIgnorePattern: '^_',
       },
     ],
+    '@typescript-eslint/no-unused-vars': ['error', {
+      argsIgnorePattern: '^_',
+      varsIgnorePattern: '^_',
+    }],
     'no-trailing-spaces': 'warn',
     'import/first': 'error',
     'import/no-unresolved': 'error',

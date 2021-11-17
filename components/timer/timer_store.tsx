@@ -41,4 +41,8 @@ export class Timer implements TimerProps {
   get startingSeconds() {
     return (this.startingMilliseconds/1000) % 60;
   }
+
+  get remainingMinutes() {
+    return Math.floor((this.remainingMilliseconds/1000) / 60);
+  }
 }

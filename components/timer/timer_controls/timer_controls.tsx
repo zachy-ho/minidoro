@@ -13,10 +13,6 @@ export const createTimerControls = ({
   timerPresenter: TimerPresenter
 }): () => JSX.Element => {
 
-  const handleSetButtonClick = (durationSeconds: number): void => {
-    timerPresenter.setStartingDurationSeconds({ timer, durationSeconds });
-  }
-
   const handlePlayPauseButtonClick = (): void => {
     timerPresenter.toggleTimer(timer);
   }
@@ -25,21 +21,25 @@ export const createTimerControls = ({
     timerPresenter.stopTimer(timer);
   }
 
+  const handleResetButtonClick = (): void => {
+    timerPresenter.resetTimer(timer);
+  }
+
   return () => (
     <TimerControlsView
       timer={timer}
-      onSetButtonClick={handleSetButtonClick}
       onPlayPauseButtonClick={handlePlayPauseButtonClick}
       onStopButtonClick={handleStopButtonClick}
+      onResetButtonClick={handleResetButtonClick}
     />
   );
 }
 
 type TimerControlsProps = {
   timer: Timer;
-  onSetButtonClick: (duration: number) => void;
   onPlayPauseButtonClick: () => void;
   onStopButtonClick: () => void;
+  onResetButtonClick: () => void;
 };
 
 export const TimerControlsView = observer(
@@ -63,30 +63,11 @@ export const TimerControlsView = observer(
       this.timerDurationInputValue = parseInt(e.target.value);
     };
 
-    onSetButtonClick = (): void => {
-      this.props.onSetButtonClick(this.timerDurationInputValue);
-    };
-
     render() {
-      const { timer, onPlayPauseButtonClick, onStopButtonClick } = this.props;
+      const { onPlayPauseButtonClick, onStopButtonClick, onResetButtonClick } = this.props;
 
       return (
         <div className={styles.timerControlsContainer}>
-          <input
-            id="timerDurationInput"
-            className={styles.durationSetter}
-            type="number"
-            value={this.timerDurationInputValue}
-            onChange={this.onTimerDurationInputChange}
-            disabled={timer.state !== 'stopped'}
-          />
-          <button
-            className={styles.setButton}
-            onClick={this.onSetButtonClick}
-            disabled={timer.state !== 'stopped'}
-          >
-            Set
-          </button>
           <button
             className={styles.playButton}
             onClick={onPlayPauseButtonClick}
@@ -95,6 +76,9 @@ export const TimerControlsView = observer(
           </button>
           <button className={styles.stopButton} onClick={onStopButtonClick}>
             Stop
+          </button>
+          <button className={styles.stopButton} onClick={onResetButtonClick}>
+            Reset
           </button>
         </div>
       );

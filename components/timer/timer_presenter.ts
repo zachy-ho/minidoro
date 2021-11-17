@@ -2,18 +2,19 @@ import { makeAutoObservable } from 'mobx';
 import type { Timer } from './timer_store';
 
 interface TimerPresenterProps {
-  setStartingDurationSeconds: ({
+  setStartingMilliseconds: ({
     timer,
-    durationSeconds,
+    milliseconds,
   }: {
     timer: Timer;
-    durationSeconds: number;
+    milliseconds: number;
   }) => void;
   toggleTimer: (timer: Timer) => void;
   pauseTimer: (timer: Timer) => void;
   runTimer: (timer: Timer) => void;
   runSingleIteration: (timer: Timer) => void;
   stopTimer: (timer: Timer) => void;
+  resetTimer: (timer: Timer) => void;
 }
 
 export class TimerPresenter implements TimerPresenterProps {
@@ -21,15 +22,15 @@ export class TimerPresenter implements TimerPresenterProps {
     makeAutoObservable(this)
   }
 
-  setStartingDurationSeconds = ({
+  setStartingMilliseconds = ({
     timer,
-    durationSeconds,
+    milliseconds,
   }: {
     timer: Timer;
-    durationSeconds: number;
+    milliseconds: number;
   }): void => {
-    timer.startingDuration = durationSeconds * 1000;
-    timer.remainingDuration = timer.startingDuration;
+    timer.startingMilliseconds = milliseconds;
+    timer.remainingMilliseconds = milliseconds;
   };
 
   toggleTimer = (timer: Timer): void => {
@@ -51,7 +52,7 @@ export class TimerPresenter implements TimerPresenterProps {
   };
 
   runTimer = (timer: Timer): void => {
-    if (timer.remainingDuration <= 0) return;
+    if (timer.remainingMilliseconds <= 0) return;
     timer.state = 'running';
 
     // Interval at every second
@@ -60,8 +61,8 @@ export class TimerPresenter implements TimerPresenterProps {
 
   runSingleIteration = (timer: Timer): void => {
     if (timer.state === 'running') {
-      timer.remainingDuration -= 1000; 
-      if (timer.remainingDuration <= 0) {
+      timer.remainingMilliseconds -= 1000;
+      if (timer.remainingMilliseconds <= 0) {
         this.stopTimer(timer);
       }
     }
@@ -71,7 +72,10 @@ export class TimerPresenter implements TimerPresenterProps {
     timer.interval && clearInterval(timer.interval);
     timer.state = 'stopped';
 
-    timer.remainingDuration = 0;
-    timer.startingDuration = 0;
+    timer.remainingMilliseconds = 0;
   };
+
+  resetTimer = (timer: Timer): void => {
+    timer.remainingMilliseconds = timer.startingMilliseconds;
+  }
 }
