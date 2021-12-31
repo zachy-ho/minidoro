@@ -11,8 +11,9 @@ interface TimerPresenterProps {
   }) => void;
   toggleTimer: (timer: Timer) => void;
   pauseTimer: (timer: Timer) => void;
-  runTimer: (timer: Timer) => void;
-  runSingleIteration: (timer: Timer) => void;
+  startTimer: (timer: Timer) => void;
+  continueTimer: (timer: Timer) => void;
+  runSingleIteration: (timer: Timer, elapsedMilliseconds: number) => void;
   stopTimer: (timer: Timer) => void;
   resetTimer: (timer: Timer) => void;
 }
@@ -36,13 +37,14 @@ export class TimerPresenter implements TimerPresenterProps {
   toggleTimer = (timer: Timer): void => {
     switch (timer.state) {
       case 'stopped':
-        this.runTimer(timer)
+        this.startTimer(timer)
         break;
       case 'paused':
-        this.pauseTimer(timer);
+        console.log('bruh')
+        this.continueTimer(timer);
         break;
       case 'running':
-        this.runTimer(timer);
+        this.pauseTimer(timer);
         break;
     }
   };
@@ -51,20 +53,32 @@ export class TimerPresenter implements TimerPresenterProps {
     timer.state = 'paused';
   };
 
-  runTimer = (timer: Timer): void => {
+  startTimer = (timer: Timer): void => {
     if (timer.remainingMilliseconds <= 0) return;
     timer.state = 'running';
 
+    let startTime = performance.now();
+
     // Interval at every second
-    timer.interval = setInterval(() => this.runSingleIteration(timer), 1000)
+    timer.interval = setInterval(() => {
+      const endTime  = performance.now();
+      const elapsed = endTime - startTime;
+      if (timer.state === 'running') {
+        this.runSingleIteration(timer, elapsed)
+      }
+      startTime = performance.now();
+    }, 1000)
   };
 
-  runSingleIteration = (timer: Timer): void => {
-    if (timer.state === 'running') {
-      timer.remainingMilliseconds -= 1000;
-      if (timer.remainingMilliseconds <= 0) {
-        this.stopTimer(timer);
-      }
+  continueTimer = (timer: Timer) : void => {
+    if (timer.remainingMilliseconds <= 0) return;
+    timer.state === 'running';
+  }
+
+  runSingleIteration = (timer: Timer, elapsedMilliseconds: number): void => {
+    timer.remainingMilliseconds -= elapsedMilliseconds;
+    if (timer.remainingMilliseconds <= 0) {
+      this.stopTimer(timer);
     }
   }
 

@@ -14,6 +14,7 @@ export const createTimerControls = ({
 }): () => JSX.Element => {
 
   const handlePlayPauseButtonClick = (): void => {
+    console.log('clicked')
     timerPresenter.toggleTimer(timer);
   }
 
