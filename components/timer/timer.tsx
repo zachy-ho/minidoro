@@ -7,35 +7,22 @@ type TimerViewProps = {
 }
 
 export const TimerView = observer(({ timer }: TimerViewProps) => {
-  const displayDurationWithTwoDigits = ( 
-    duration: number, 
+  const padDigits = (
+    duration: number,
   ): string => {
-    const initialLength = duration.toString().length;
-    return initialLength === 1 
-      ? `0${duration.toString()}` 
-      : duration.toString();
+    const rounded = Math.round(duration);
+    return rounded.toString().length === 1
+      ? `0${rounded.toString()}`
+      : rounded.toString();
   }
 
   return (
-    <div className={styles.timerContainer}>
-      <span className={styles.minutes}>{displayDurationWithTwoDigits(timer.remainingMinutes)}</span>
-      :
-      <span className={styles.seconds}>{displayDurationWithTwoDigits(timer.remainingSeconds)}</span>
+    <div className={styles.container}>
+      <div>
+        <span className={styles.minutes}>{padDigits(timer.remainingMinutes)}</span>
+        <span>:</span>
+        <span className={styles.seconds}>{padDigits(timer.remainingSeconds)}</span>
+      </div>
     </div>
   )
 })
-
-
-export const createTimer = ({
-  timer,
-} : {
-  timer: Timer,
-}): () => JSX.Element => {
-
-  return observer(() => (
-      <>
-        <TimerView timer={timer} />
-      </>
-    )
-  );
-}

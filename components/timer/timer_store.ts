@@ -16,10 +16,8 @@ type TimerConstructorProps = {
 
 export class Timer implements TimerProps {
 
-  // In milliseconds
   startingMilliseconds: number;
 
-  // In milliseconds
   remainingMilliseconds: number;
 
   state: TimerState;

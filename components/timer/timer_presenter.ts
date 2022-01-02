@@ -40,7 +40,6 @@ export class TimerPresenter implements TimerPresenterProps {
         this.startTimer(timer)
         break;
       case 'paused':
-        console.log('bruh')
         this.continueTimer(timer);
         break;
       case 'running':
@@ -72,7 +71,7 @@ export class TimerPresenter implements TimerPresenterProps {
 
   continueTimer = (timer: Timer) : void => {
     if (timer.remainingMilliseconds <= 0) return;
-    timer.state === 'running';
+    timer.state = 'running';
   }
 
   runSingleIteration = (timer: Timer, elapsedMilliseconds: number): void => {

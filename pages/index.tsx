@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { Home } from 'components/home/home';
 import styles from './main.module.css';
+import { Home } from 'components/home/home';
 
 const Index: NextPage = () => {
   return (

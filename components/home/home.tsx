@@ -1,24 +1,19 @@
 import React from 'react';
 import styles from './home.module.css';
-import { convertSecondsToMilliseconds } from 'base/time_converter';
-import { createTimer } from 'components/timer/timer';
-import { Timer } from 'components/timer/timer_store';
-import { TimerPresenter } from 'components/timer/timer_presenter';
-import { createTimerControls } from 'components/timer/timer_controls/timer_controls';
+import { installTimer } from 'components/timer/install';
+import { Settings } from 'components/settings/settings';
+import { SessionControls } from 'components/timer/session_controls/session_controls';
 
 export const Home = () => {
-  const timer = new Timer({ startingMilliseconds: convertSecondsToMilliseconds(65) });
-  const timerPresenter = new TimerPresenter();
-  const TimerView = createTimer({
-    timer,
-  });
-  const TimerControls = createTimerControls({ timer, timerPresenter });
+  const { TimerView, TimerControlsView } = installTimer();
 
   return (
     <div className={styles.pageContainer}>
       <div className={styles.pomodoroContainer}>
+        <Settings />
+        <SessionControls />
         <TimerView />
-        <TimerControls />
+        <TimerControlsView />
       </div>
     </div>
 )

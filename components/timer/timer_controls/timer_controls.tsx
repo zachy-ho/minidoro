@@ -1,46 +1,15 @@
 import React, { ChangeEvent } from 'react';
+import Image from 'next/image';
+import playIcon from 'public/images/play.svg';
 import { observer } from 'mobx-react';
 import { makeObservable, observable } from 'mobx';
 import styles from './timer_controls.module.css';
 import type { TimerPresenter } from 'components/timer/timer_presenter';
 import type { Timer } from 'components/timer/timer_store';
 
-export const createTimerControls = ({
-  timer,
-  timerPresenter
-}: {
-  timer: Timer,
-  timerPresenter: TimerPresenter
-}): () => JSX.Element => {
-
-  const handlePlayPauseButtonClick = (): void => {
-    console.log('clicked')
-    timerPresenter.toggleTimer(timer);
-  }
-
-  const handleStopButtonClick = (): void => {
-    timerPresenter.stopTimer(timer);
-  }
-
-  const handleResetButtonClick = (): void => {
-    timerPresenter.resetTimer(timer);
-  }
-
-  return () => (
-    <TimerControlsView
-      timer={timer}
-      onPlayPauseButtonClick={handlePlayPauseButtonClick}
-      onStopButtonClick={handleStopButtonClick}
-      onResetButtonClick={handleResetButtonClick}
-    />
-  );
-}
-
 type TimerControlsProps = {
   timer: Timer;
-  onPlayPauseButtonClick: () => void;
-  onStopButtonClick: () => void;
-  onResetButtonClick: () => void;
+  timerPresenter: TimerPresenter;
 };
 
 export const TimerControlsView = observer(
@@ -64,22 +33,22 @@ export const TimerControlsView = observer(
       this.timerDurationInputValue = parseInt(e.target.value);
     };
 
-    render() {
-      const { onPlayPauseButtonClick, onStopButtonClick, onResetButtonClick } = this.props;
+    handlePlayPauseButtonClick = (): void => {
+      const { timer, timerPresenter } = this.props;
+      timerPresenter.toggleTimer(timer);
+    }
 
+    render() {
       return (
-        <div className={styles.timerControlsContainer}>
+        <div className={styles.container}>
           <button
-            className={styles.playButton}
-            onClick={onPlayPauseButtonClick}
+            className={styles.playBtn}
+            onClick={this.handlePlayPauseButtonClick}
           >
-            Start
-          </button>
-          <button className={styles.stopButton} onClick={onStopButtonClick}>
-            Stop
-          </button>
-          <button className={styles.stopButton} onClick={onResetButtonClick}>
-            Reset
+            <Image
+              src={playIcon}
+              alt="Play"
+            />
           </button>
         </div>
       );

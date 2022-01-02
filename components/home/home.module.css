@@ -9,6 +9,6 @@
 .pomodoroContainer {
   display: flex;
   flex-direction: column;
-  width: 30rem;
-  height: 30rem;
+  width: 18rem;
+  height: 50%;
 }
