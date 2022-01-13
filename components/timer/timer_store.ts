@@ -1,21 +1,25 @@
 import { makeAutoObservable } from 'mobx';
+import { convertMinutesToMilliseconds } from 'base/time_converter';
 
 type TimerState = 'stopped' | 'running' | 'paused';
 
+export type Session = {
+  type: 'work' | 'break';
+  minutes: number;
+}
+
 type TimerProps = {
+  session: Session;
   startingMilliseconds: number;
   remainingMilliseconds: number;
   state: TimerState;
   interval: NodeJS.Timer | undefined;
-}
-
-type TimerConstructorProps = {
-  startingMilliseconds: number,
-  state?: TimerState;
 }
 
 export class Timer implements TimerProps {
 
+  session: Session
+
   startingMilliseconds: number;
 
   remainingMilliseconds: number;
@@ -24,12 +28,20 @@ export class Timer implements TimerProps {
 
   interval: NodeJS.Timer | undefined;
 
-  constructor({ startingMilliseconds, state }: TimerConstructorProps) {
-    this.startingMilliseconds = startingMilliseconds;
-    this.remainingMilliseconds = startingMilliseconds;
-    this.state = state ?? 'stopped';
+  constructor() {
+    this.session = {
+      type: 'work',
+      minutes: 25
+    }
+    this.startingMilliseconds = convertMinutesToMilliseconds(this.session.minutes);
+    this.remainingMilliseconds = this.startingMilliseconds;
+    this.state = 'stopped';
     this.interval = undefined;
     makeAutoObservable(this);
+  }
+
+  get remainingMinutes() {
+    return Math.floor((this.remainingMilliseconds/1000) / 60);
   }
 
   get remainingSeconds() {
@@ -37,10 +49,6 @@ export class Timer implements TimerProps {
   }
 
   get startingSeconds() {
-    return (this.startingMilliseconds/1000) % 60;
-  }
-
-  get remainingMinutes() {
-    return Math.floor((this.remainingMilliseconds/1000) / 60);
+     return (this.startingMilliseconds/1000) % 60;
   }
 }

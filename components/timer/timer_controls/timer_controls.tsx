@@ -1,9 +1,10 @@
 import React, { ChangeEvent } from 'react';
 import Image from 'next/image';
-import playIcon from 'public/images/play.svg';
-import { observer } from 'mobx-react';
 import { makeObservable, observable } from 'mobx';
+import { observer } from 'mobx-react';
 import styles from './timer_controls.module.css';
+import playIcon from 'public/images/play.svg';
+import pauseIcon from 'public/images/pause.svg';
 import type { TimerPresenter } from 'components/timer/timer_presenter';
 import type { Timer } from 'components/timer/timer_store';
 
@@ -39,6 +40,8 @@ export const TimerControlsView = observer(
     }
 
     render() {
+      const { timer } = this.props;
+
       return (
         <div className={styles.container}>
           <button
@@ -46,7 +49,7 @@ export const TimerControlsView = observer(
             onClick={this.handlePlayPauseButtonClick}
           >
             <Image
-              src={playIcon}
+              src={timer.state === 'running' ? pauseIcon : playIcon}
               alt="Play"
             />
           </button>

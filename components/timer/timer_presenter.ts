@@ -1,24 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import type { Timer } from './timer_store';
 
-interface TimerPresenterProps {
-  setStartingMilliseconds: ({
-    timer,
-    milliseconds,
-  }: {
-    timer: Timer;
-    milliseconds: number;
-  }) => void;
-  toggleTimer: (timer: Timer) => void;
-  pauseTimer: (timer: Timer) => void;
-  startTimer: (timer: Timer) => void;
-  continueTimer: (timer: Timer) => void;
-  runSingleIteration: (timer: Timer, elapsedMilliseconds: number) => void;
-  stopTimer: (timer: Timer) => void;
-  resetTimer: (timer: Timer) => void;
-}
-
-export class TimerPresenter implements TimerPresenterProps {
+export class TimerPresenter {
   constructor() {
     makeAutoObservable(this)
   }
@@ -77,7 +60,7 @@ export class TimerPresenter implements TimerPresenterProps {
   runSingleIteration = (timer: Timer, elapsedMilliseconds: number): void => {
     timer.remainingMilliseconds -= elapsedMilliseconds;
     if (timer.remainingMilliseconds <= 0) {
-      this.stopTimer(timer);
+      this.finishRunningTimer(timer);
     }
   }
 
@@ -87,6 +70,21 @@ export class TimerPresenter implements TimerPresenterProps {
 
     timer.remainingMilliseconds = 0;
   };
+
+  finishRunningTimer = (timer: Timer): void => {
+    this.stopTimer(timer);
+    timer.session
+  }
+
+  setupNextSession = (session: Session) => {
+    switch (session.type) {
+      case 'work':
+
+        break;
+      case 'break':
+        break;
+    }
+  }
 
   resetTimer = (timer: Timer): void => {
     timer.remainingMilliseconds = timer.startingMilliseconds;

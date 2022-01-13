@@ -1,12 +1,12 @@
 import { observer } from 'mobx-react';
 import styles from './timer.module.css';
-import type { Timer } from 'components/timer/timer_store';
+import type { Timer as TimerStore } from 'components/timer/timer_store';
 
 type TimerViewProps = {
-  timer: Timer
+  timer: TimerStore
 }
 
-export const TimerView = observer(({ timer }: TimerViewProps) => {
+export const Timer = observer(({ timer }: TimerViewProps) => {
   const padDigits = (
     duration: number,
   ): string => {
