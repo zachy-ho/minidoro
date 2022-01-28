@@ -1,16 +1,15 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { makeObservable, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import styles from './timer_controls.module.css';
 import playIcon from 'public/images/play.svg';
 import pauseIcon from 'public/images/pause.svg';
-import type { TimerPresenter } from 'components/timer/timer_presenter';
-import type { Timer } from 'components/timer/timer_store';
+import type { TimerStore } from 'components/timer/timer_presenter';
 
 type TimerControlsProps = {
-  timer: Timer;
-  timerPresenter: TimerPresenter;
+  timer: TimerStore;
+  onPlayPause: (timer: TimerStore) => void;
 };
 
 export const TimerControlsView = observer(
@@ -27,16 +26,9 @@ export const TimerControlsView = observer(
       });
     }
 
-    onTimerDurationInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-      if (e.target.value === '') {
-        this.timerDurationInputValue = 0;
-      }
-      this.timerDurationInputValue = parseInt(e.target.value);
-    };
-
     handlePlayPauseButtonClick = (): void => {
-      const { timer, timerPresenter } = this.props;
-      timerPresenter.toggleTimer(timer);
+      const { timer, onPlayPause } = this.props;
+      onPlayPause(timer);
     }
 
     render() {

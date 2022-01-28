@@ -1,0 +1,18 @@
+.workConfig {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.breakConfig {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.durationSelect {
+    background-color: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}

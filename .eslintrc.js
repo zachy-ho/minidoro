@@ -29,7 +29,7 @@ module.exports = {
         varsIgnorePattern: '^_',
       },
     ],
-    '@typescript-eslint/no-unused-vars': ['error', {
+    '@typescript-eslint/no-unused-vars': ['warn', {
       argsIgnorePattern: '^_',
       varsIgnorePattern: '^_',
     }],
@@ -37,7 +37,8 @@ module.exports = {
     'import/first': 'error',
     'import/no-unresolved': 'error',
     'import/order': 'error',
-    'react/display-name': 'off'
+    'react/display-name': 'off',
+    'semi': [2, 'always']
   },
   settings: {
     'import/parsers': {

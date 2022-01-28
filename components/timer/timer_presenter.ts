@@ -1,26 +1,100 @@
 import { makeAutoObservable } from 'mobx';
-import type { Timer } from './timer_store';
+import { convertMinutesToMilliseconds } from 'base/time_converter';
+
+type TimerState = 'stopped' | 'running' | 'paused';
+
+export type Session = {
+  type: 'work' | 'break';
+  minutes: number;
+}
+
+export class TimerStore {
+
+  private _startingMilliseconds: number;
+
+  private _remainingMilliseconds: number;
+
+  private _state: TimerState;
+
+  private _interval: NodeJS.Timer | null;
+
+  constructor(minutes: number) {
+    this._startingMilliseconds = convertMinutesToMilliseconds(minutes);
+    this._remainingMilliseconds = this._startingMilliseconds;
+    this._state = 'stopped';
+    this._interval = null;
+    makeAutoObservable(this);
+  }
+
+  get startingMilliseconds() {
+    return this._startingMilliseconds;
+  }
+
+  set startingMilliseconds(milliseconds: number) {
+    this._startingMilliseconds = milliseconds;
+  }
+
+  get remainingMilliseconds() {
+    return this._remainingMilliseconds;
+  }
+
+  set remainingMilliseconds(milliseconds: number) {
+    this._remainingMilliseconds = milliseconds;
+  }
+
+  get state() {
+    return this._state;
+  }
+
+  set state(newState: TimerState) {
+    this._state = newState;
+  }
+
+  get interval() {
+    return this._interval;
+  }
+
+  set interval(newInterval: NodeJS.Timer | null) {
+    this._interval = newInterval;
+  }
+
+  get fullDurationCompleted() {
+    return this.remainingMilliseconds <= 0 && this.interval === null && this.state === 'stopped';
+  }
+
+  get remainingMinutes() {
+    return Math.floor((this._remainingMilliseconds/1000) / 60);
+  }
+
+  get remainingSeconds() {
+    return (this._remainingMilliseconds/1000) % 60;
+  }
+
+  get startingSeconds() {
+     return (this._startingMilliseconds/1000) % 60;
+  }
+}
 
 export class TimerPresenter {
   constructor() {
-    makeAutoObservable(this)
+    makeAutoObservable(this);
   }
 
   setStartingMilliseconds = ({
     timer,
     milliseconds,
   }: {
-    timer: Timer;
+    timer: TimerStore;
     milliseconds: number;
   }): void => {
     timer.startingMilliseconds = milliseconds;
     timer.remainingMilliseconds = milliseconds;
   };
 
-  toggleTimer = (timer: Timer): void => {
+  toggleTimer = (timer: TimerStore): void => {
     switch (timer.state) {
       case 'stopped':
-        this.startTimer(timer)
+        this.startTimer(timer);
         break;
       case 'paused':
         this.continueTimer(timer);
@@ -31,11 +105,11 @@ export class TimerPresenter {
     }
   };
 
-  pauseTimer = (timer: Timer): void => {
+  pauseTimer = (timer: TimerStore): void => {
     timer.state = 'paused';
   };
 
-  startTimer = (timer: Timer): void => {
+  startTimer = (timer: TimerStore): void => {
     if (timer.remainingMilliseconds <= 0) return;
     timer.state = 'running';
 
@@ -46,47 +120,31 @@ export class TimerPresenter {
       const endTime  = performance.now();
       const elapsed = endTime - startTime;
       if (timer.state === 'running') {
-        this.runSingleIteration(timer, elapsed)
+        timer.remainingMilliseconds -= elapsed;
+        if (timer.remainingMilliseconds <= 0) {
+          this.stopTimer(timer);
+        }
       }
       startTime = performance.now();
-    }, 1000)
+    }, 1000);
   };
 
-  continueTimer = (timer: Timer) : void => {
+  continueTimer = (timer: TimerStore) : void => {
     if (timer.remainingMilliseconds <= 0) return;
     timer.state = 'running';
   }
 
-  runSingleIteration = (timer: Timer, elapsedMilliseconds: number): void => {
-    timer.remainingMilliseconds -= elapsedMilliseconds;
-    if (timer.remainingMilliseconds <= 0) {
-      this.finishRunningTimer(timer);
+  stopTimer = (timer: TimerStore): void => {
+    if (timer.interval) {
+      clearInterval(timer.interval);
+      timer.interval = null;
     }
-  }
-
-  stopTimer = (timer: Timer): void => {
-    timer.interval && clearInterval(timer.interval);
     timer.state = 'stopped';
 
     timer.remainingMilliseconds = 0;
   };
 
-  finishRunningTimer = (timer: Timer): void => {
-    this.stopTimer(timer);
-    timer.session
-  }
-
-  setupNextSession = (session: Session) => {
-    switch (session.type) {
-      case 'work':
-
-        break;
-      case 'break':
-        break;
-    }
-  }
-
-  resetTimer = (timer: Timer): void => {
+  resetTimer = (timer: TimerStore): void => {
     timer.remainingMilliseconds = timer.startingMilliseconds;
   }
 }

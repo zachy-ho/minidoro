@@ -1,35 +1,60 @@
 import React from 'react';
 import { convertMinutesToMilliseconds } from 'base/time_converter';
-import { Timer as TimerStore } from 'components/timer/timer_store';
 import { Timer } from 'components/timer/timer';
 import { TimerControlsView } from 'components/timer/timer_controls/timer_controls';
-import { TimerPresenter } from 'components/timer/timer_presenter';
+import { TimerStore, TimerPresenter } from 'components/timer/timer_presenter';
 
-interface TimerController {
+export interface TimerController {
   setStartingMinutes: (minutes: number) => void;
+  toggleTimer: () => void;
+  stopTimer: () => void;
 }
 
-type Props = {
+export const installTimer = (minutes: number): ({
+  timerStore: TimerStore,
   Timer: React.ComponentType,
-  TimerControls: React.ComponentType,
-  TimerController: TimerController
-}
-
-export const installTimer = (): Props => {
-  const timer = new TimerStore();
+  timerController: TimerController
+}) => {
+  const timer = new TimerStore(minutes);
   const timerPresenter = new TimerPresenter();
 
-  const TimerView = () => <Timer timer={timer} />
-  const TimerControlsViewImpl = () => <TimerControlsView timer={timer} timerPresenter={timerPresenter} />
+  const TimerView = () => <Timer timer={timer} />;
 
   const setStartingMinutes = (minutes: number) => {
     timerPresenter.setStartingMilliseconds({ timer, milliseconds: convertMinutesToMilliseconds(minutes) });
-  }
+  };
+
+  const toggleTimer = () => {
+    timerPresenter.toggleTimer(timer);
+  };
+
+  const stopTimer = () => {
+    timerPresenter.stopTimer(timer);
+  };
 
   return {
+    timerStore: timer,
     Timer: TimerView,
-    TimerControls: TimerControlsViewImpl,
-    TimerController: { setStartingMinutes }
+    timerController: {
+      setStartingMinutes,
+      toggleTimer,
+      stopTimer
+    }
   };
-}
+};
 
+export const installTimerControls = ({
+  timer,
+  timerController
+}:{
+  timer: TimerStore
+  timerController: TimerController
+}): ({
+  TimerControls: React.ComponentType
+}) => {
+  const TimerControlsViewImpl = () => <TimerControlsView timer={timer} onPlayPause={timerController.toggleTimer} />;
+
+  return {
+    TimerControls: TimerControlsViewImpl
+  };
+};

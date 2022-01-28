@@ -1,12 +1,8 @@
 import { observer } from 'mobx-react';
 import styles from './timer.module.css';
-import type { Timer as TimerStore } from 'components/timer/timer_store';
+import type { TimerStore } from 'components/timer/timer_presenter';
 
-type TimerViewProps = {
-  timer: TimerStore
-}
-
-export const Timer = observer(({ timer }: TimerViewProps) => {
+export const Timer = observer(({ timer }: { timer: TimerStore }) => {
   const padDigits = (
     duration: number,
   ): string => {
@@ -14,7 +10,7 @@ export const Timer = observer(({ timer }: TimerViewProps) => {
     return rounded.toString().length === 1
       ? `0${rounded.toString()}`
       : rounded.toString();
-  }
+  };
 
   return (
     <div className={styles.container}>
@@ -24,5 +20,5 @@ export const Timer = observer(({ timer }: TimerViewProps) => {
         <span className={styles.seconds}>{padDigits(timer.remainingSeconds)}</span>
       </div>
     </div>
-  )
-})
+  );
+});
